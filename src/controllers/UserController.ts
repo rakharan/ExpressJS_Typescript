@@ -9,11 +9,13 @@ let data: any[] = [
 ];
 
 class UserController implements IController {
+  //Show all data
   index(req: Request, res: Response): Response {
     console.log("ini adalah index users");
     return res.send(data);
   }
 
+  //Create one data
   create(req: Request, res: Response): Response {
     const { id, name } = req.body;
 
@@ -22,6 +24,7 @@ class UserController implements IController {
     return res.send("create sukses");
   }
 
+  //Show one data
   show(req: Request, res: Response): Response {
     const { id } = req.params;
 
@@ -29,6 +32,7 @@ class UserController implements IController {
     return res.send(person);
   }
 
+  //Update data
   update(req: Request, res: Response): Response {
     const { id } = req.params;
     const { name } = req.body;
@@ -39,6 +43,7 @@ class UserController implements IController {
     return res.send("update sukses");
   }
 
+  //Delete data
   delete(req: Request, res: Response): Response {
     const { id } = req.params;
 
