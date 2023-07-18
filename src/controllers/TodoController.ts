@@ -1,32 +1,85 @@
 import { Request, Response } from "express";
 import IController from "./ControllerInterface";
-const db = require("../db/models");
-
+import TodoService from "../services/TodoService";
 
 class TodoController implements IController {
   //Show all data
-  index = (req: Request, res: Response): Response => {
-    return res.send("sukses")
+  index = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const service: TodoService = new TodoService(req)
+      const todos = await service.getAll()
+      let message = "";
+      if (!todos.length) {
+        message = "No Todo Found!";
+      }
+
+      return res.send({ data: todos, message });
+
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).send({ error: 'An error occurred while fetching todos' });
+    }
+
   }
 
   //Create one data
-  create(req: Request, res: Response): Response {
-    return res.send("create sukses");
+  create = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const service: TodoService = new TodoService(req)
+      const todo = await service.store()
+      return res.send({
+        data: todo,
+        message: "Todo created!"
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).send({ error: 'An error occurred while creating todos' });
+    }
   }
 
   //Show one data
-  show(req: Request, res: Response): Response {
-    return res.send("test");
+  show = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const service: TodoService = new TodoService(req)
+      const todo = await service.getOne()
+      return res.send({
+        data: todo,
+        message: ""
+      })
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).send({ error: 'An error occurred while fetching a single todo' });
+    }
   }
 
   //Update data
-  update(req: Request, res: Response): Response {
-    return res.send("update sukses");
+  update = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const service: TodoService = new TodoService(req)
+      await service.update()
+
+      return res.send({
+        message: "Todo Updated!"
+      })
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).send({ error: 'An error occurred while updating a single todo' });
+    }
   }
 
   //Delete data
-  delete(req: Request, res: Response): Response {
-    return res.send("test");
+  delete = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const service: TodoService = new TodoService(req)
+      await service.delete()
+
+      return res.send({
+        message: "Todo Deleted!"
+      })
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).send({ error: 'An error occurred while deleting a single todo' });
+    }
   }
 }
 
