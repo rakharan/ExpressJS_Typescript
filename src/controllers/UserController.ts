@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import IController from "./ControllerInterface";
+const db = require("../db/models");
 
 let data: any[] = [
   { id: 1, name: "Adi" },
@@ -10,9 +11,14 @@ let data: any[] = [
 
 class UserController implements IController {
   //Show all data
-  index(req: Request, res: Response): Response {
-    console.log("ini adalah index users");
-    return res.send(data);
+  index = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const users = await db.user.findAll();
+      return res.send(users);
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).send({ error: 'An error occurred while fetching users' });
+    }
   }
 
   //Create one data
