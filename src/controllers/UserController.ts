@@ -1,15 +1,9 @@
 import { Request, Response } from "express";
 import IController from "./ControllerInterface";
+import UserService from "../services/UserService";
 const db = require("../db/models");
 
-let data: any[] = [
-  { id: 1, name: "Adi" },
-  { id: 2, name: "Budi" },
-  { id: 3, name: "Cidi" },
-  { id: 4, name: "Didi" },
-];
-
-class UserController implements IController {
+class UserController implements Omit<IController, 'create'> {
   //Show all data
   index = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -21,40 +15,49 @@ class UserController implements IController {
     }
   }
 
-  //Create one data
-  create(req: Request, res: Response): Response {
-    const { id, name } = req.body;
-
-    data.push({ id, name });
-
-    return res.send("create sukses");
-  }
-
   //Show one data
-  show(req: Request, res: Response): Response {
-    const { id } = req.params;
-
-    let person = data.find((item) => item.id == id);
-    return res.send(person);
+  show = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const service: UserService = new UserService(req)
+      const user = await service.getOne()
+      return res.send({
+        data: user,
+        message: ""
+      })
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).send({ error: 'An error occurred while fetching a single user' });
+    }
   }
 
   //Update data
-  update(req: Request, res: Response): Response {
-    const { id } = req.params;
-    const { name } = req.body;
+  update = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const service: UserService = new UserService(req)
+      await service.update()
 
-    let person = data.find((item) => item.id == id);
-    person.name = name;
-
-    return res.send("update sukses");
+      return res.send({
+        message: "User updated!"
+      })
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).send({ error: 'An error occurred while updating a single user' });
+    }
   }
 
   //Delete data
-  delete(req: Request, res: Response): Response {
-    const { id } = req.params;
+  delete = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const service: UserService = new UserService(req)
+      await service.delete()
 
-    let people = data.filter((item) => item.id != id);
-    return res.send(people);
+      return res.send({
+        message: "User deleted!"
+      })
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).send({ error: 'An error occurred while deleting a single user' });
+    }
   }
 }
 
