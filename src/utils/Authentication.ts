@@ -11,10 +11,10 @@ class Authentication {
     return result;
   }
 
-  public static generateToken = (id: number, username: string, password: string): string => {
+  public static generateToken = (id: number, username: string,): string => {
     const secretKey: string = process.env.JWT_SECRET_KEY || "secret";
 
-    const token: string = jwt.sign({ id, username, password }, secretKey);
+    const token: string = jwt.sign({ id, username }, secretKey);
     return token;
   }
 }

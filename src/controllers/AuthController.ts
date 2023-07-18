@@ -12,6 +12,7 @@ class AuthController {
     await db.user.create({ username, password: hashedPassword });
     return res.send("Registration Success");
   };
+
   //Login
   login = async (req: Request, res: Response): Promise<Response> => {
 
@@ -26,12 +27,17 @@ class AuthController {
 
     // generate token
     if (compare) {
-      let token = Authentication.generateToken(user.id, username, user.password)
+      let token = Authentication.generateToken(user.id, username)
       return res.send({
         token
       });
     }
     return res.send("Authentication failed")
+  }
+
+  //Profile
+  profile = (req: Request, res: Response): Response => {
+    return res.send(req.app.locals.credential)
   }
 }
 export default new AuthController();
