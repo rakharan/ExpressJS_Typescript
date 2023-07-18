@@ -13,7 +13,7 @@ class UserController implements IController {
   //Show all data
   index = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const users = await db.user.findAll();
+      const users = await db.user.findAll({ attributes: ["id", "username", "password"] });
       return res.send(users);
     } catch (error) {
       console.error('Error:', error);
