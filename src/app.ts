@@ -1,4 +1,4 @@
-import express, { Response, Request, NextFunction, Application } from "express";
+import express, { Application } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import compression from "compression";
@@ -28,10 +28,6 @@ class App {
   }
 
   protected routes(): void {
-    this.app.route("/").get((req: Request, res: Response): void => {
-      res.send("Hello world");
-    });
-
     this.app.use("/api/v1/users", UserRoutes);
     this.app.use("/api/v1/auth", AuthRoutes);
     this.app.use("/api/v1/todos", TodoRoutes);
